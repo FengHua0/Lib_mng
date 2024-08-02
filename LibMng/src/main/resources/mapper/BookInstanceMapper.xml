@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xdc5.libmng.mapper.BookInstanceMapper">
+        <insert id="addBookInstance" parameterType="com.xdc5.libmng.entity.BookInstance" useGeneratedKeys="true" keyProperty="instanceId">
+            INSERT INTO BookInstance (isbn, addTime
+            <trim prefix="," suffixOverrides=",">
+                <if test="borrowStatus != null">
+                    borrowStatus
+                </if>
+            </trim>
+            )
+            VALUES (
+            #{isbn}, NOW()
+            <trim prefix="," suffixOverrides=",">
+                <if test="borrowStatus != null">
+                    #{borrowStatus}
+                </if>
+            </trim>
+
+            )
+        </insert>
+
+    <update id="updateStatus">
+        UPDATE BookInstance
+        SET borrowStatus=#{borrowStatus}
+        WHERE
+            instanceId=#{instanceId}
+    </update>
+
+    <delete id="delBookInstanceById">
+        DELETE FROM BookInstance WHERE instanceId=#{instanceId}
+    </delete>
+
+    <select id="getBookInstances" parameterType="com.xdc5.libmng.entity.BookInstance" resultType="com.xdc5.libmng.entity.BookInstance">
+        SELECT instanceId,isbn,borrowStatus,addTime
+        FROM BookInstance
+        <where>
+            <if test="instanceId != null">
+                AND instanceId=#{instanceId}
+            </if>
+            <if test="isbn != null">
+                AND isbn=#{isbn}
+            </if>
+            <if test="borrowStatus!= null">
+                AND borrowStatus=#{borrowStatus}
+            </if>
+            <if test="addTime !=null">
+                AND addTime=#{addTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="getInstanceId" resultType="java.lang.Integer">
+        SELECT instanceId
+        FROM BookInstance
+        <where>
+            <if test="isbn != null">
+                AND isbn=#{isbn}
+            </if>
+        </where>
+    </select>
+
+    <select id="getIsbnByInstanceId" resultType="java.lang.String">
+        SELECT isbn
+        FROM BookInstance
+        where
+            instanceId=#{instanceId}
+    </select>
+
+    <select id="getStatusByInstanceId" resultType="java.lang.Integer">
+        SELECT borrowStatus
+        FROM BookInstance
+        where
+            instanceId=#{instanceId}
+    </select>
+    <select id="getInstanceById" resultType="com.xdc5.libmng.entity.BookInstance">
+        SELECT *
+        FROM BookInstance
+        WHERE instanceId=#{instanceId}
+    </select>
+
+</mapper>
